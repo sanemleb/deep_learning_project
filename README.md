@@ -39,6 +39,13 @@ You need to replace the first one with the path in your own computer and also ch
 `scp -r /Users/sanemleblebici/Desktop/carseg_data  s222448@transfer.gbar.dtu.dk:~/Desktop/car_seg`\
 Now you should wait until everything is copied on
 
+Now that we have the data we can clone the git repo on there\
+I used the https clone method with a personal token\
+run `git clone https://github.com/sanemleb/deep_learning_project.git`\
+let me know if you cant do it and I will show you how
+
+Now we should have the venv, the data and the code setup to run training
+
 
 # WORKING AFTER INITIAL SETUP
 First run the following command on your command line using your student id \
