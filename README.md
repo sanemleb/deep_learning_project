@@ -6,7 +6,7 @@
 #### Elli Georgiou - s223408
 
 
-### INITIAL SETUP NOTES
+# INITIAL SETUP NOTES
 
 First run the following command on your command line using your student id\
 `ssh <student_id>@login.hpc.dtu.dk`
@@ -35,7 +35,7 @@ Any other package can also be installed the same way while the venv is active
 
 
 
-### WORKING AFTER INITIAL SETUP
+# WORKING AFTER INITIAL SETUP
 First run the following command on your command line using your student id \
 `ssh <student_id>@login.hpc.dtu.dk `
 
