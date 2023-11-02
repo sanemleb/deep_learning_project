@@ -58,45 +58,51 @@ class CarDataset(Dataset):
         self.img_3door_paths_ns = [os.path.join(data_dir, 'images//orange_3_doors//no_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//black_5_doors//no_segmentation'))]
         self.img_3door_paths_s = [os.path.join(data_dir, 'images//orange_3_doors//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//orange_3_doors//with_segmentation'))]
         
+        self.all_img_paths = self.img_5door_paths_ns+self.img_3door_paths_ns
+
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
-        print(self.mask_3door_paths[-1])
-        print(len(self.mask_3door_paths))
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths
 
     def __len__(self):
-        return len(self.image_paths)
+        return len(self.all_img_paths)
 
     def __getitem__(self, idx):
-        path = os.path.join(self.path, name)
+        #print(self.all_img_paths)
+        img_path = self.all_img_paths[idx]
+        mask_path = self.all_mask_paths[idx]
+
+        img = np.array(Image.open(img_path))
+        mask = np.load(mask_path) # here possible conversion to float needed?
+
         # mask = cv2.imread(self.mask_paths[idx], cv2.IMREAD_GRAYSCALE)
 
         # if self.transform:
         #     img = self.transform(img)
         #     mask = self.transform(mask)
 
-        return path#img, mask
+        return img, mask
 
 if __name__ == '__main__':
-
     dir_path = r"C://Users//micha//Downloads//carseg_data//carseg_data"
-
-    # Load the .npy file
-    # file_path = dir_path+'//arrays//black_5_doors_0001.npy'
-    # data = np.load(file_path)
-
-    # # Display the content (assuming it's an image or a 2D array)
-    # plt.imshow(data, cmap='viridis')  # Change the colormap to your preference
-    # plt.title('Numpy .npy File Content')
-    # plt.colorbar()  # Add a colorbar if needed
-    # plt.show()
-
-
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_classes = 9
-    #car_parts = ['hood','front_door','rear door','frame','rear quater panel','trunk lid','fender','bumper','rest of car']
     carParts = createCarPartsDictionary()
     dataset = CarDataset(dir_path)
-    #print(carParts['hood']['class_value'])
-    #print(os.listdir(data_path))
+
+    # Test the __getitem__ function
+    index = 1600  # Change this to the index of the item you want to retrieve
+    item = dataset.__getitem__(index)
+
+    # Display the item (for testing purposes)
+    img, mask = item  # Assuming the __getitem__ function returns an image and a mask
+    plt.figure()
+    plt.subplot(1, 2, 1)
+    plt.imshow(img)
+    plt.title('Image')
+    plt.subplot(1, 2, 2)
+    plt.imshow(mask, cmap='viridis')
+    plt.title('Mask')
+    plt.show()
