@@ -29,8 +29,8 @@ Now activate the virtual environment by running `source .venv/bin/activate` (sti
 You can deactivate by running `deactivate` and activate back using `source .venv/bin/activate` again.
 
 Then run the following to install pytorch while venv is active \
-`pip3 install torch torchvision torchaudio`
-
+`pip3 install torch torchvision torchaudio`\
+`python -m pip install -U matplotlib`
 Any other package can also be installed the same way while the venv is active
 
 
