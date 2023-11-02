@@ -57,14 +57,17 @@ class CarDataset(Dataset):
         self.img_5door_paths_s = [os.path.join(data_dir, 'images//black_5_doors//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//black_5_doors//with_segmentation'))]
         self.img_3door_paths_ns = [os.path.join(data_dir, 'images//orange_3_doors//no_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//black_5_doors//no_segmentation'))]
         self.img_3door_paths_s = [os.path.join(data_dir, 'images//orange_3_doors//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//orange_3_doors//with_segmentation'))]
-        
-        self.all_img_paths = self.img_5door_paths_ns+self.img_3door_paths_ns
+        self.img_photo_paths_ns = [os.path.join(data_dir, 'images//photo//no_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//photo//no_segmentation'))]
+        self.img_photo_paths_s = [os.path.join(data_dir, 'images//photo//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//photo//with_segmentation'))]
+        # print((self.img_photo_paths_ns[29]))
+        self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[29:]
 
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
-        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths
+
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[29:]
 
     def __len__(self):
         return len(self.all_img_paths)
@@ -93,16 +96,15 @@ if __name__ == '__main__':
     dataset = CarDataset(dir_path)
 
     # Test the __getitem__ function
-    index = 1600  # Change this to the index of the item you want to retrieve
-    item = dataset.__getitem__(index)
-
-    # Display the item (for testing purposes)
-    img, mask = item  # Assuming the __getitem__ function returns an image and a mask
-    plt.figure()
-    plt.subplot(1, 2, 1)
-    plt.imshow(img)
-    plt.title('Image')
-    plt.subplot(1, 2, 2)
-    plt.imshow(mask, cmap='viridis')
-    plt.title('Mask')
-    plt.show()
+    # index = -1  # Change this to the index of the item you want to retrieve
+    # item = dataset.__getitem__(index)
+    # # Display the item (for testing purposes)
+    # img, mask = item  # Assuming the __getitem__ function returns an image and a mask
+    # plt.figure()
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(img)
+    # plt.title('Image')
+    # plt.subplot(1, 2, 2)
+    # plt.imshow(mask, cmap='viridis')
+    # plt.title('Mask')
+    # plt.show()
