@@ -61,4 +61,8 @@ Go into the project dir\
 Run the following to activate venv \
 `source .venv/bin/activate`
 
-Start working\
+Start working
+
+# RUNNING A TRAINING IN THE SERVER 
+
+When you want to run a .py file that will run a training do the following
