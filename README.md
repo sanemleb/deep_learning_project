@@ -33,6 +33,11 @@ Then run the following to install pytorch while venv is active \
 `python -m pip install -U matplotlib`\
 Any other package can also be installed the same way while the venv is active
 
+Now that we have the environment we will transfer our data onto the server as well\
+For this open a new terminal on your own local environment and run the following command\
+You need to replace the first one with the path in your own computer and also change the student id in the second part\
+`scp -r /Users/sanemleblebici/Desktop/carseg_data  s222448@transfer.gbar.dtu.dk:~/Desktop/car_seg`\
+Now you should wait until everything is copied on
 
 
 # WORKING AFTER INITIAL SETUP
