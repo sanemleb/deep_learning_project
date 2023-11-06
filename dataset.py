@@ -5,7 +5,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import Dataset
-from settings import createCarPartsDictionary, data_path
+from settings import createCarPartsDictionary, DATA_PATH
 from torchvision import transforms
 
 from testDataset import TestCarDataset
@@ -69,7 +69,7 @@ if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_classes = 9
     carParts = createCarPartsDictionary()
-    dataset = CarDataset(data_path)
+    dataset = CarDataset(DATA_PATH)
 
     # Test the __getitem__ function
     index = 10  # Change this to the index of the item you want to retrieve

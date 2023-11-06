@@ -1,4 +1,6 @@
 import os
+import torch
+
 
 def createCarPartsDictionary():
     carParts = {
@@ -45,12 +47,20 @@ def createCarPartsDictionary():
 car_parts = ['hood', 'front door', 'rear door', 'frame', 'rear quarter panel', 'trunk lid', 'fender', 'bumper', 'rest of car']
 num_classes = 9
 # total images for train+val = 2975 
-split_ratio = 0.85
+SPLIT_RATIO = 0.85
 # train_size = 2530 # 2975 - 445(val) = 2530(train)
 # val_size = 445 # 15% of data for validation
-data_path = r"C://Users//micha//Downloads//carseg_data//carseg_data"
+DATA_PATH = r"C://Users//micha//Downloads//carseg_data//carseg_data"
 
-# hyperparameters settings
-batch_size = 32
-epochs = 1
-lr = 1e-3
+# image settings
+IMAGE_WIDTH = 100
+IMAGE_HEIGHT = 100
+
+# train hyperparameters settings
+BATCH_SIZE = 32
+EPOCHS = 1
+LEARNING_RATE = 1e-3
+DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
+NUM_EPOCHS = 1
+NUM_WORKERS = 2
+
