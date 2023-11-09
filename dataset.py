@@ -54,7 +54,8 @@ class CarDataset(Dataset):
         img = torch.from_numpy(img)
         mask = torch.from_numpy(mask)
 
-        return img, mask # here we will need to change to return a tensor(?), this formrat need to be accepted by datalaoder
+        return img, mask # here we will need to change to return a tensor(?), this formrat need to be accepted by datalaoder 
+                         # possibly from_numpy() on its own is not enough
 
     def create_test_dataset(self):
         test_img_paths = self.img_test_photo_paths

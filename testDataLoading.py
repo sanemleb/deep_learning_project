@@ -44,7 +44,6 @@ if __name__ == '__main__':
     train_dataloader = DataLoader(train_dataset, batch_size=settings.BATCH_SIZE, shuffle=True)
     val_dataloader = DataLoader(val_dataset, batch_size=settings.BATCH_SIZE, shuffle=False)
     test_dataloader = DataLoader(test_dataset, batch_size=settings.BATCH_SIZE, shuffle=False)
-
     # skeleton for train/val loops when laoding data from dataLoaders
     # train loop
     # for epoch in range(settings.NUM_EPOCHS):
