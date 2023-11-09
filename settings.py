@@ -52,14 +52,14 @@ SPLIT_RATIO = 0.85
 # val_size = 445 # 15% of data for validation
 DATA_PATH = r'./data/carseg_data'
 # image settings
-IMAGE_WIDTH = 100
-IMAGE_HEIGHT = 100
+IMAGE_WIDTH = 256
+IMAGE_HEIGHT = 256
 
 # train hyperparameters settings
 BATCH_SIZE = 32
 EPOCHS = 1
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 1
+NUM_EPOCHS = 2
 NUM_WORKERS = 2
 

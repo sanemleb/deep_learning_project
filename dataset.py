@@ -34,6 +34,8 @@ class CarDataset(Dataset):
 
         # combine mask paths into 1 object, but not test masks
         self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
+        
+        self.transform = transform
  
     def __len__(self):
         return len(self.all_img_paths)
@@ -44,11 +46,8 @@ class CarDataset(Dataset):
         mask_path = self.all_mask_paths[idx]
 
         img = np.array(Image.open(img_path))
-        mask = np.load(mask_path).astype(np.double) # here possible conversion to float needed?
-
-        # TODO
-        # Before changing data to tensors image transforamtions should be applied
-        # resizing etc.
+        mask = np.load(mask_path).astype(np.double)
+        print(mask.shape[2])
 
         # Convert to PyTorch tensors
         img = torch.from_numpy(img)
@@ -73,23 +72,19 @@ if __name__ == '__main__':
     dataset = CarDataset(DATA_PATH)
 
     # Test the __getitem__ function
-    index = 10  # Change this to the index of the item you want to retrieve
+    index = random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
     item = dataset.__getitem__(index)
     # Display the item (for testing purposes)
     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
 
-    # print(img.shape)
-    # print(mask.shape)
+    print(img.shape)
+    print(mask.shape)
 
-    # print(mask[0][0])
-    # print(mask[1][0])
-    # print(mask[2][0])
-
-    # plt.figure()
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(img)
-    # plt.title('Image')
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(mask, cmap='viridis')
-    # plt.title('Mask')
-    # plt.show()
+    plt.figure()
+    plt.subplot(1, 2, 1)
+    plt.imshow(img)
+    plt.title('Image')
+    plt.subplot(1, 2, 2)
+    plt.imshow(mask)
+    plt.imshow(mask, cmap='viridis')
+    plt.show()
