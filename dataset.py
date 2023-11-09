@@ -80,11 +80,23 @@ if __name__ == '__main__':
     print(img.shape)
     print(mask.shape)
 
-    plt.figure()
+
+    # Normalize the mask values to be in the range [0, 1]
+    # normalized_mask = (mask - mask.min()) / (mask.max() - mask.min())
+
+    # Plot the image and mask side by side
+    plt.figure(figsize=(10, 5))
+
+    # Original Image
     plt.subplot(1, 2, 1)
     plt.imshow(img)
-    plt.title('Image')
+    plt.title('Original Image')
+    plt.axis('off')
+
+    # Segmentation Mask
     plt.subplot(1, 2, 2)
-    plt.imshow(mask)
-    plt.imshow(mask, cmap='viridis')
+    plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
+    plt.title('Segmentation Mask')
+    plt.axis('off')
+
     plt.show()
