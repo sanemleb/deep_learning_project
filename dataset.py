@@ -7,6 +7,7 @@ from PIL import Image
 from torch.utils.data import Dataset
 from settings import createCarPartsDictionary, DATA_PATH
 from torchvision import transforms
+from utlis import get_data_loaders
 
 from testDataset import TestCarDataset
 
@@ -49,6 +50,9 @@ class CarDataset(Dataset):
         mask = np.load(mask_path).astype(np.double)
         print(mask.shape[2])
 
+        # if self.transform:
+            # img, mask = self.transform(img, mask)
+
         # Convert to PyTorch tensors
         img = torch.from_numpy(img)
         mask = torch.from_numpy(mask)
@@ -63,8 +67,6 @@ class CarDataset(Dataset):
         test_dataset = TestCarDataset(test_img_paths, test_mask_paths)
         return test_dataset
 
-
-
 if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     num_classes = 9
@@ -77,26 +79,22 @@ if __name__ == '__main__':
     # Display the item (for testing purposes)
     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
 
-    print(img.shape)
-    print(mask.shape)
-
+    # print(img.shape)
+    # print(mask.shape)
 
     # Normalize the mask values to be in the range [0, 1]
     # normalized_mask = (mask - mask.min()) / (mask.max() - mask.min())
 
-    # Plot the image and mask side by side
-    plt.figure(figsize=(10, 5))
-
-    # Original Image
-    plt.subplot(1, 2, 1)
-    plt.imshow(img)
-    plt.title('Original Image')
-    plt.axis('off')
-
-    # Segmentation Mask
-    plt.subplot(1, 2, 2)
-    plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
-    plt.title('Segmentation Mask')
-    plt.axis('off')
-
-    plt.show()
+    # # Plot the image and mask side by side
+    # plt.figure(figsize=(10, 5))
+    # # Original Image
+    # plt.subplot(1, 2, 1)
+    # plt.imshow(img)
+    # plt.title('Original Image')
+    # plt.axis('off')
+    # # Segmentation Mask
+    # plt.subplot(1, 2, 2)
+    # plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
+    # plt.title('Segmentation Mask')
+    # plt.axis('off')
+    # plt.show()
