@@ -63,3 +63,4 @@ DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 NUM_EPOCHS = 2
 NUM_WORKERS = 2
 
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

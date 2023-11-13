@@ -7,8 +7,6 @@ from PIL import Image
 from torch.utils.data import Dataset
 from settings import createCarPartsDictionary, DATA_PATH
 from torchvision import transforms
-from utlis import get_data_loaders
-
 from testDataset import TestCarDataset
 
 class CarDataset(Dataset):
@@ -25,7 +23,7 @@ class CarDataset(Dataset):
         self.img_test_photo_paths = self.img_photo_paths_ns[:30]
 
         # combine photo paths into 1 object, but not test photo paths
-        self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
+        self.all_img_paths = self.img_5door_paths_ns #+ self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
 
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
@@ -34,7 +32,7 @@ class CarDataset(Dataset):
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
         # combine mask paths into 1 object, but not test masks
-        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths #+ self.mask_3door_paths + self.mask_photo_paths[30:]
         
         self.transform = transform
  
@@ -48,7 +46,6 @@ class CarDataset(Dataset):
 
         img = np.array(Image.open(img_path))
         mask = np.load(mask_path).astype(np.double)
-        print(mask.shape[2])
 
         # if self.transform:
             # img, mask = self.transform(img, mask)
@@ -67,34 +64,15 @@ class CarDataset(Dataset):
         test_dataset = TestCarDataset(test_img_paths, test_mask_paths)
         return test_dataset
 
-if __name__ == '__main__':
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    num_classes = 9
-    carParts = createCarPartsDictionary()
-    dataset = CarDataset(DATA_PATH)
+# if __name__ == '__main__':
+#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+#     num_classes = 9
+#     carParts = createCarPartsDictionary()
+#     dataset = CarDataset(DATA_PATH)
 
-    # Test the __getitem__ function
-    index = random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
-    item = dataset.__getitem__(index)
-    # Display the item (for testing purposes)
-    img, mask = item  # Assuming the __getitem__ function returns an image and a mask
-
-    # print(img.shape)
-    # print(mask.shape)
-
-    # Normalize the mask values to be in the range [0, 1]
-    # normalized_mask = (mask - mask.min()) / (mask.max() - mask.min())
-
-    # # Plot the image and mask side by side
-    # plt.figure(figsize=(10, 5))
-    # # Original Image
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(img)
-    # plt.title('Original Image')
-    # plt.axis('off')
-    # # Segmentation Mask
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
-    # plt.title('Segmentation Mask')
-    # plt.axis('off')
-    # plt.show()
+#     # Test the __getitem__ function
+#     index = random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
+#     item = dataset.__getitem__(index)
+#     # Display the item (for testing purposes)
+#     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
+    
