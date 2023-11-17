@@ -9,7 +9,7 @@ from torchvision.utils import save_image
 from torch.utils.tensorboard import SummaryWriter
 
 def train(): 
-    # TODO :  Do we need to feed the image size here ??
+    # TODO:  Do we need to feed the image size here ??
     model = UNET(in_channels=3, out_channels=9)
     model.to(device)
     
