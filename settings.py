@@ -57,10 +57,9 @@ IMAGE_HEIGHT = 256
 
 # train hyperparameters settings
 BATCH_SIZE = 32
-EPOCHS = 1
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 2
+NUM_EPOCHS = 3
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
