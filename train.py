@@ -10,7 +10,7 @@ from torch.utils.tensorboard import SummaryWriter
 
 def train(): 
     # TODO:  Do we need to feed the image size here ??
-    model = UNET(in_channels=3, out_channels=9)
+    model = UNET(in_channels=3, out_channels=10)
     model.to(device)
     
     train_dl, val_dl, test_dl = get_data_loaders(DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
@@ -28,21 +28,16 @@ def train():
         for images, masks in tqdm(train_dl, desc=f"Epoch {epoch + 1}/{NUM_EPOCHS}"):
             images, masks = images.to(device), masks.to(device)
             optimizer.zero_grad()
-            
-            reshaped_image_tensor = images.permute(0, 3, 1, 2)
-            reshaped_image_tensor = reshaped_image_tensor.to(torch.float32)
-            reshaped_mask_tensor = masks.permute(0, 3, 1, 2)
-            reshaped_mask_tensor = reshaped_mask_tensor.to(torch.float32)
 
-            outputs = model(reshaped_image_tensor)
+            outputs = model(images)
 
-            # Extract predicted class indices
-            predicted_classes = torch.argmax(outputs[:, :, :, :], dim=1)
-            softmax_output = torch.nn.functional.softmax(predicted_classes.float(), dim=1)
-            # Extract ground truth class indices from the 4th channel of the mask
-            ground_truth_classes = reshaped_mask_tensor[:, 3, :, :]
+            # # Extract predicted class indices
+            # predicted_classes = torch.argmax(outputs[:, :, :, :], dim=1)
+            # softmax_output = torch.nn.functional.softmax(predicted_classes.float(), dim=1)
+            # # Extract ground truth class indices from the 4th channel of the mask
+            # ground_truth_classes = masks[:, 3, :, :]
 
-            loss = nn.functional.cross_entropy(softmax_output, ground_truth_classes)
+            loss = nn.functional.cross_entropy(outputs, masks)
             # loss.backward()
             optimizer.step()
             running_loss += loss.item()
@@ -58,22 +53,10 @@ def train():
         with torch.no_grad():
             for images, masks in tqdm(val_dl, desc=f"Validation {epoch + 1}/{NUM_EPOCHS}"):
                 images, masks = images.to(device), masks.to(device)
-                
-                
-                reshaped_image_tensor = images.permute(0, 3, 1, 2)
-                reshaped_image_tensor = reshaped_image_tensor.to(torch.float32)
-                reshaped_mask_tensor = masks.permute(0, 3, 1, 2)
-                reshaped_mask_tensor = reshaped_mask_tensor.to(torch.float32)
 
-                outputs = model(reshaped_image_tensor)
+                outputs = model(images)
 
-                # Extract predicted class indices
-                predicted_classes = torch.argmax(outputs[:, :, :, :], dim=1)
-                softmax_output = torch.nn.functional.softmax(predicted_classes.float(), dim=1)
-                # Extract ground truth class indices from the 4th channel of the mask
-                ground_truth_classes = reshaped_mask_tensor[:, 3, :, :]
-
-                loss = nn.functional.cross_entropy(softmax_output, ground_truth_classes)
+                loss = nn.functional.cross_entropy(outputs, masks)
                 
                 
                 val_loss += loss.item()
