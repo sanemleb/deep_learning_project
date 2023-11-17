@@ -5,6 +5,12 @@
 #### Ari Menachem - s163956
 #### Elli Georgiou - s223408
 
+# COLAB SETUP NOTES
+Download the data folder I sent and upload to your drive\
+Open a colab notebook and load train.ipynb\
+Upload all the .py files under colab dependencies folder\
+Should be good to go 
+
 
 # INITIAL SETUP NOTES
 
