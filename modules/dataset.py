@@ -5,9 +5,9 @@ import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
 from torch.utils.data import Dataset
-from settings import createCarPartsDictionary, DATA_PATH
+from modules.settings import createCarPartsDictionary, DATA_PATH
 from torchvision import transforms
-from testDataset import TestCarDataset
+from modules.testDataset import TestCarDataset
 
 class CarDataset(Dataset):
     def __init__(self, data_dir, transform=None):
@@ -23,7 +23,7 @@ class CarDataset(Dataset):
         self.img_test_photo_paths = self.img_photo_paths_ns[:30]
 
         # combine photo paths into 1 object, but not test photo paths
-        self.all_img_paths = self.img_5door_paths_ns #+ self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
+        self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
 
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
@@ -32,7 +32,7 @@ class CarDataset(Dataset):
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
         # combine mask paths into 1 object, but not test masks
-        self.all_mask_paths = self.mask_5door_paths #+ self.mask_3door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
         
         self.transform = transform
  

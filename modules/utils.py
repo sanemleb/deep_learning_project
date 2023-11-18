@@ -1,6 +1,6 @@
 from torch.utils.data import random_split, DataLoader, Subset
-import settings
-from dataset import CarDataset
+import modules.settings
+from modules.dataset import CarDataset
 import numpy as np
 
 def get_data_loaders(data_path, batch_size, split_ratio, random_seed=42):
