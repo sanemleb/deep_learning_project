@@ -18,7 +18,8 @@ def train():
         param.to(device)
 
     train_dl, val_dl, test_dl = get_data_loaders(DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
-    optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE)
+    #optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE, betas=(0.9, 0.999), weight_decay=1e-4)
+    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9, weight_decay=1e-4)
     criterion = nn.functional.nll_loss
     writer = SummaryWriter()
 
@@ -71,7 +72,7 @@ def train():
         print(f"Epoch {epoch + 1}/{NUM_EPOCHS}, Loss: {average_loss:.4f}, Val Loss: {average_val_loss:.4f}")
 
     # Save the trained model
-    torch.save(model.state_dict(), "unet_model_two.pth")
+    torch.save(model.state_dict(), "unet_model.pth")
     
     # Save the loss data 
     file = "loss_data.txt"

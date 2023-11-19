@@ -45,7 +45,7 @@ def createCarPartsDictionary():
 
 # data settings
 car_parts = ['hood', 'front door', 'rear door', 'frame', 'rear quarter panel', 'trunk lid', 'fender', 'bumper', 'rest of car']
-num_classes = 9
+num_classes = 10
 # total images for train+val = 2975 
 SPLIT_RATIO = 0.85
 # train_size = 2530 # 2975 - 445(val) = 2530(train)
@@ -60,7 +60,7 @@ IMAGE_HEIGHT = 256
 BATCH_SIZE = 32
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 100
+NUM_EPOCHS = 35
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

@@ -43,6 +43,7 @@ class UNET(nn.Module):
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
+        self.dropout = nn.Dropout(p=0.1)
 
     def forward(self, x):
         skip_connections = []
@@ -65,6 +66,7 @@ class UNET(nn.Module):
             concat_skip = torch.cat((skip_connection, x), dim=1)
             x = self.ups[idx+1](concat_skip)
 
+        x = self.dropout(x)
         # Convert the final output to the same data type as the input
         x = x.to(dtype=x.dtype)
 
