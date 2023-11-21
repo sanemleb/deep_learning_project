@@ -9,7 +9,6 @@ from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
 
 def train():
-    # TODO:  Do we need to feed the image size here ??
     model = UNET(in_channels=3, out_channels=10)
     model.to(device)
     print(summary(model, (3, 256, 256)) )
@@ -18,9 +17,12 @@ def train():
         param.to(device)
 
     train_dl, val_dl, test_dl = get_data_loaders(DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
-    #optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE, betas=(0.9, 0.999), weight_decay=1e-4)
-    optimizer = torch.optim.SGD(model.parameters(), lr=1e-3, momentum=0.9, weight_decay=1e-4)
-    criterion = nn.functional.nll_loss
+    optimizer = torch.optim.Adam(model.parameters(), LEARNING_RATE, weight_decay=1e-4)
+    # optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
+
+    class_weights = torch.tensor([1.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.0]).to(device)
+    normalized_weights = class_weights / class_weights.sum()
+    criterion = nn.CrossEntropyLoss(weight=normalized_weights)
     writer = SummaryWriter()
 
     train_epoch_losses = []
@@ -35,14 +37,7 @@ def train():
             optimizer.zero_grad()
 
             outputs = model(images)
-
-            # # Extract predicted class indices
-            # predicted_classes = torch.argmax(outputs[:, :, :, :], dim=1)
-            # softmax_output = torch.nn.functional.softmax(predicted_classes.float(), dim=1)
-            # # Extract ground truth class indices from the 4th channel of the mask
-            # ground_truth_classes = masks[:, 3, :, :]
-
-            loss = nn.functional.cross_entropy(outputs, masks)
+            loss = criterion(outputs, masks)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
@@ -60,9 +55,7 @@ def train():
                 images, masks = images.to(device), masks.to(device)
 
                 outputs = model(images)
-
-                loss = nn.functional.cross_entropy(outputs, masks)
-
+                loss = criterion(outputs, masks)
                 val_loss += loss.item()
 
         average_val_loss = val_loss / len(val_dl)

@@ -23,8 +23,9 @@ class CarDataset(Dataset):
         self.img_test_photo_paths = self.img_photo_paths_ns[:30]
 
         # combine photo paths into 1 object, but not test photo paths
-        self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
-
+        # self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
+        self.all_img_paths = self.img_5door_paths_ns + self.img_photo_paths_ns[30:]
+        
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
@@ -32,8 +33,10 @@ class CarDataset(Dataset):
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
         # combine mask paths into 1 object, but not test masks
-        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
-        
+        # self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
+
+
         self.transform = transform
  
     def __len__(self):
@@ -47,27 +50,21 @@ class CarDataset(Dataset):
         img = np.array(Image.open(img_path))
         mask = np.load(mask_path).astype(np.double)
 
-        # if self.transform:
-            # img, mask = self.transform(img, mask)
+        # Convert to PyTorch tensors
+        mask_split = mask[:, :, 3]
+        mask_split = mask_split//10
+        mask_split = mask_split.astype(int)
 
         # Convert to PyTorch tensors
         img = torch.from_numpy(img)
-        mask = torch.from_numpy(mask)
-        
-        mask_split = mask[:, :, 3]
-        mask_split = mask_split//10
-        
-        masks = mask_split.int()
+        mask = torch.from_numpy(mask_split)
 
-        masks = masks.to(torch.int64)
-
-        one_hot_encoding = torch.nn.functional.one_hot(masks.view(-1), num_classes=10)
-        one_hot_encoding = one_hot_encoding.view(masks.shape[0], masks.shape[1], 10)
+        # one_hot_encoding = torch.nn.functional.one_hot(mask.view(-1), num_classes=10)
+        # one_hot_encoding = one_hot_encoding.view(mask.shape[0], mask.shape[1], 10)
         
         reshaped_image_tensor = img.permute(2, 0, 1)
         reshaped_image_tensor = reshaped_image_tensor.to(torch.float32)
-        reshaped_mask_tensor = one_hot_encoding.permute(2, 0, 1)
-        reshaped_mask_tensor = reshaped_mask_tensor.to(torch.float32)
+        reshaped_mask_tensor = mask.to(torch.long)
 
         return reshaped_image_tensor, reshaped_mask_tensor # here we will need to change to return a tensor(?), this formrat need to be accepted by datalaoder 
                          # possibly from_numpy() on its own is not enough
