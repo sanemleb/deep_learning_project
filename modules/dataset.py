@@ -7,8 +7,8 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision import transforms as T
-from testDataset import TestCarDataset
-from settings import createCarPartsDictionary, DATA_PATH
+from modules.testDataset import TestCarDataset
+from modules.settings import createCarPartsDictionary, DATA_PATH
 
 class CarDataset(Dataset):
     def __init__(self, data_dir, mean, std,  transform=None):
@@ -46,12 +46,8 @@ class CarDataset(Dataset):
             # print(img[0][:100])
 
         t = T.Compose([T.ToTensor()])
-        t1 = T.Compose([T.ToTensor(), T.Normalize(self.mean, self.std)])
-
-        img1 = t(img)
-        img2 = t1(img)
-        print(torch.unique(img1))        
-        print(torch.unique(img2))
+        img = t(img)
+        # print(torch.unique(img))
 
         one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
         ms = torch.from_numpy(one_hot_encoded)
