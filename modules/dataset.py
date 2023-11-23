@@ -8,6 +8,7 @@ from torch.utils.data import Dataset
 from modules.settings import createCarPartsDictionary, DATA_PATH
 from torchvision import transforms
 from modules.testDataset import TestCarDataset
+from torchvision import transforms as T
 
 class CarDataset(Dataset):
     def __init__(self, data_dir, transform=None):
@@ -37,37 +38,32 @@ class CarDataset(Dataset):
         self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
 
 
-        self.transform = transform
+        self.transform = T.Compose([T.ToTensor()])
  
     def __len__(self):
         return len(self.all_img_paths)
 
     def __getitem__(self, idx):
-
-        img_path = self.all_img_paths[idx]
+        
         mask_path = self.all_mask_paths[idx]
-
-        img = np.array(Image.open(img_path))
+        
         mask = np.load(mask_path).astype(np.double)
-
-        # Convert to PyTorch tensors
+        img = mask[:, :, :3]
         mask_split = mask[:, :, 3]
         mask_split = mask_split//10
         mask_split = mask_split.astype(int)
-
-        # Convert to PyTorch tensors
-        img = torch.from_numpy(img)
-        mask = torch.from_numpy(mask_split)
-
-        # one_hot_encoding = torch.nn.functional.one_hot(mask.view(-1), num_classes=10)
-        # one_hot_encoding = one_hot_encoding.view(mask.shape[0], mask.shape[1], 10)
         
-        reshaped_image_tensor = img.permute(2, 0, 1)
-        reshaped_image_tensor = reshaped_image_tensor.to(torch.float32)
-        reshaped_mask_tensor = mask.to(torch.long)
+        if self.transform is not None:
+            img = self.transform(img)
+        
+        one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
+        ms = torch.from_numpy(one_hot_encoded)
+        
+        img = img.to(torch.float32)
+        reshaped_mask_tensor = ms.permute(2, 0, 1)
+        reshaped_mask_tensor = reshaped_mask_tensor.to(torch.float32)
 
-        return reshaped_image_tensor, reshaped_mask_tensor # here we will need to change to return a tensor(?), this formrat need to be accepted by datalaoder 
-                         # possibly from_numpy() on its own is not enough
+        return img, reshaped_mask_tensor 
 
     def create_test_dataset(self):
         test_img_paths = self.img_test_photo_paths
@@ -78,7 +74,7 @@ class CarDataset(Dataset):
 
 if __name__ == '__main__':
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-    num_classes = 9
+    num_classes = 10
     carParts = createCarPartsDictionary()
     dataset = CarDataset(DATA_PATH)
 
@@ -86,10 +82,10 @@ if __name__ == '__main__':
     index = random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
     item = dataset.__getitem__(index)
     # Display the item (for testing purposes)
-    img, mask = item  # Assuming the __getitem__ function returns an image and a mask
+    # img, mask = item  # Assuming the __getitem__ function returns an image and a mask
 
-    print(img.shape)
-    print(mask.shape)
+    # print(img.shape)
+    # print(mask.shape)
 
     # Normalize the mask values to be in the range [0, 1]
     # normalized_mask = (mask - mask.min()) / (mask.max() - mask.min())
