@@ -56,14 +56,14 @@ DATA_PATH = r'./data/carseg_data'
 # image settings
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 256
-MEAN=[0.485, 0.456, 0.406]
-STD=[0.229, 0.224, 0.225]
+MEAN=[0.08595481, 0.08409479, 0.08416109]
+STD=[0.09251076, 0.09070041, 0.09207094]
 
 # train hyperparameters settings
 BATCH_SIZE =32
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 10
+NUM_EPOCHS = 25
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
