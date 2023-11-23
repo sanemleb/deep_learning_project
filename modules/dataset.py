@@ -14,19 +14,6 @@ class CarDataset(Dataset):
     def __init__(self, data_dir, transform=None):
         self.data_dir = data_dir
         
-        # getting the photos
-        self.img_5door_paths_ns = [os.path.join(data_dir, 'resized/black_5_doors_no_segmentation_resized', img) for img in os.listdir(os.path.join(data_dir, 'resized/black_5_doors_no_segmentation_resized'))]
-        # self.img_5door_paths_s = [os.path.join(data_dir, 'images//black_5_doors//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//black_5_doors//with_segmentation'))]
-        self.img_3door_paths_ns = [os.path.join(data_dir, 'resized/orange_3_doors_no_segmentation_resized', img) for img in os.listdir(os.path.join(data_dir, 'resized/orange_3_doors_no_segmentation_resized'))]
-        # self.img_3door_paths_s = [os.path.join(data_dir, 'images//orange_3_doors//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//orange_3_doors//with_segmentation'))]
-        self.img_photo_paths_ns = [os.path.join(data_dir, 'resized/photo_no_segmentation_resized', img) for img in os.listdir(os.path.join(data_dir, 'resized/photo_no_segmentation_resized'))]
-        # self.img_photo_paths_s = [os.path.join(data_dir, 'images//photo//with_segmentation', img) for img in os.listdir(os.path.join(data_dir, 'images//photo//with_segmentation'))]
-        self.img_test_photo_paths = self.img_photo_paths_ns[:30]
-
-        # combine photo paths into 1 object, but not test photo paths
-        # self.all_img_paths = self.img_5door_paths_ns + self.img_3door_paths_ns + self.img_photo_paths_ns[30:]
-        self.all_img_paths = self.img_5door_paths_ns + self.img_photo_paths_ns[30:]
-        
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
@@ -37,17 +24,16 @@ class CarDataset(Dataset):
         # self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
         self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
 
-
         self.transform = T.Compose([T.ToTensor()])
  
     def __len__(self):
-        return len(self.all_img_paths)
+        return len(self.all_mask_paths)
 
     def __getitem__(self, idx):
         
         mask_path = self.all_mask_paths[idx]
         
-        mask = np.load(mask_path).astype(np.double)
+        mask = np.load(mask_path)
         img = mask[:, :, :3]
         mask_split = mask[:, :, 3]
         mask_split = mask_split//10
@@ -66,10 +52,9 @@ class CarDataset(Dataset):
         return img, reshaped_mask_tensor 
 
     def create_test_dataset(self):
-        test_img_paths = self.img_test_photo_paths
         test_mask_paths = self.mask_test_photo_paths
 
-        test_dataset = TestCarDataset(test_img_paths, test_mask_paths)
+        test_dataset = TestCarDataset(test_mask_paths)
         return test_dataset
 
 if __name__ == '__main__':
