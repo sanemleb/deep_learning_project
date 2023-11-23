@@ -52,15 +52,18 @@ SPLIT_RATIO = 0.85
 # val_size = 445 # 15% of data for validation
 COLAB_PATH = '/content/drive/MyDrive/data/carseg_data'
 DATA_PATH = r'./data/carseg_data'
+
 # image settings
 IMAGE_WIDTH = 256
 IMAGE_HEIGHT = 256
+MEAN=[0.485, 0.456, 0.406]
+STD=[0.229, 0.224, 0.225]
 
 # train hyperparameters settings
 BATCH_SIZE =32
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 15
+NUM_EPOCHS = 10
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
