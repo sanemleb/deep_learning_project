@@ -33,3 +33,21 @@ class TestCarDataset(Dataset):
         reshaped_mask_tensor = reshaped_mask_tensor.to(torch.float32)
 
         return img, reshaped_mask_tensor 
+    
+    def calculate_mean_std(self):
+        # Calculate mean and std
+        num_channels = 3  # Assuming RGB images
+        mean_accumulator = np.zeros(num_channels)
+        std_accumulator = np.zeros(num_channels)
+
+        for idx in range(len(self)):
+            img, _ = self[idx]
+            img_np = img.numpy()
+
+            mean_accumulator += np.mean(img_np, axis=(1, 2))
+            std_accumulator += np.std(img_np, axis=(1, 2))
+
+        mean = mean_accumulator / len(self)
+        std = std_accumulator / len(self)
+
+        return mean, std

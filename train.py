@@ -9,7 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
 
 def train():
-    model = UNET(in_channels=3, out_channels=10)
+    model = UNET(in_channels=3, out_channels=9)
     model.to(device)
     # print(summary(model, (3, 256, 256)) )
 

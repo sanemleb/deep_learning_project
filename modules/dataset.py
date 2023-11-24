@@ -49,7 +49,12 @@ class CarDataset(Dataset):
         img = t(img)
         # print(torch.unique(img))
 
-        one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
+        # Exclude one class (e.g., background)
+        num_classes = 10
+        mask_split[mask_split == 9] = 0  # Set class 9 (background) to 0
+        mask_split[mask_split > 0] -= 1  # Shift other classes down by 1
+
+        one_hot_encoded = np.eye(num_classes - 1, dtype=int)[mask_split.squeeze()]
         ms = torch.from_numpy(one_hot_encoded)
         
         img = img.to(torch.float32)
@@ -93,11 +98,11 @@ if __name__ == '__main__':
     dataset = CarDataset(DATA_PATH, MEAN, STD)
 
     # mean, std = dataset.calculate_mean_std()
-    test = dataset.create_test_dataset()
-    mean, std= test.calculate_mean_std()
+    # test = dataset.create_test_dataset()
+    # mean, std= test.calculate_mean_std()
 
-    print("mean: ", mean)
-    print("std: ", std)
+    # print("mean: ", mean)
+    # print("std: ", std)
 
     # Test the __getitem__ function
     index = 0#random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
@@ -107,6 +112,13 @@ if __name__ == '__main__':
 
     print(img.shape)
     print(mask.shape)
+
+
+    # print("0: ", mask[0])
+    # print("1: ", mask[1])
+    # print("2: ", mask[2])
+    # print("3: ", mask[3])
+    # print("4: ", mask[4])
 
     # # Plot the image and mask side by side
     # plt.figure(figsize=(10, 5))

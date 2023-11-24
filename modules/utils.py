@@ -2,6 +2,7 @@ from torch.utils.data import random_split, DataLoader, Subset
 import modules.settings
 from modules.dataset import CarDataset
 import numpy as np
+from modules.settings import MEAN, STD
 
 # def get_data_loaders(data_path, batch_size, split_ratio, random_seed=42):
 #     car_dataset = CarDataset(data_path)
@@ -35,7 +36,7 @@ import numpy as np
 
 
 def get_data_loaders(data_path, batch_size, split_ratio=0.8):
-    dataset = CarDataset(data_path)
+    dataset = CarDataset(data_path, MEAN, STD)
 
     # Calculate the number of samples for training and validation based on the split ratio
     num_samples = len(dataset)
