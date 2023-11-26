@@ -9,6 +9,7 @@ from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
 
 def train():
+    print(device)
     model = UNET(in_channels=3, out_channels=10)
     model.to(device)
     # print(summary(model, (3, 256, 256)) )
@@ -17,12 +18,8 @@ def train():
         param.to(device)
 
     train_dl, val_dl = get_data_loaders(DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
-    optimizer = torch.optim.SGD(model.parameters(), LEARNING_RATE, weight_decay=1e-4)
-    # optimizer = torch.optim.SGD(model.parameters(), lr=LEARNING_RATE)
-
-    # class_weights = torch.tensor([1.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 5.0, 2.0]).to(device)
-    # normalized_weights = class_weights / class_weights.sum()
-    criterion = nn.BCEWithLogitsLoss()
+    optimizer = torch.optim.AdamW(model.parameters(), LEARNING_RATE, weight_decay=1e-4)
+    criterion = nn.CrossEntropyLoss()
     writer = SummaryWriter()
 
     train_epoch_losses = []
