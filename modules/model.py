@@ -42,7 +42,7 @@ class UNET(nn.Module):
             self.ups.append(DoubleConv(feature*2, feature))
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
-        self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
+        self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1, bias=False)
         self.dropout = nn.Dropout(p=0.1)
 
     def forward(self, x):
@@ -70,7 +70,6 @@ class UNET(nn.Module):
         x = x.to(dtype=x.dtype)
 
         x = self.final_conv(x)
-        # x = torch.nn.functional.softmax(x, dim=1)  # Apply sigmoid activation
 
         return x
 

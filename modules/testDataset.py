@@ -24,8 +24,14 @@ class TestCarDataset(Dataset):
         
         if self.transform is not None:
             img = self.transform(img)
-        
-        one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
+
+        t = T.Compose([T.ToTensor(), T.Normalize(self.mean, self.std)])
+        img = t(img)
+
+        num_classes = 10
+        mask_split[mask_split == 9] = 0  # Set class 9 (background) to 0
+
+        one_hot_encoded = np.eye(num_classes-1, dtype=int)[mask_split.squeeze()]
         ms = torch.from_numpy(one_hot_encoded)
         
         img = img.to(torch.float32)

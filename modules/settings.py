@@ -63,7 +63,7 @@ STD=[0.09251076, 0.09070041, 0.09207094]
 BATCH_SIZE =32
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 12
+NUM_EPOCHS = 20
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
