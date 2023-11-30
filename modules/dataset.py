@@ -18,16 +18,13 @@ class CarDataset(Dataset):
         self.transform = transform
 
         # getting the masks
-        self.new_data = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays'))]
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
-        # combine mask paths into 1 object, but not test masks
-        # self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths
         # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
-        self.all_mask_paths = self.new_data
 
  
     def __len__(self):
@@ -37,10 +34,9 @@ class CarDataset(Dataset):
         
         mask_path = self.all_mask_paths[idx]
         
-        mask = np.load(mask_path)
+        mask = np.load(mask_path, allow_pickle=True)
         img = mask[:, :, :3]
         mask_split = mask[:, :, 3]
-        # mask_split = mask_split//10
         mask_split = mask_split.astype(int)
         
         if self.transform is not None:
