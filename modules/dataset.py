@@ -23,7 +23,7 @@ class CarDataset(Dataset):
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
-        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
         # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
 
  
