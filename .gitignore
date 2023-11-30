@@ -4,3 +4,4 @@ data/
 runs/
 models/
 drone_dataset/
+scores.txt
