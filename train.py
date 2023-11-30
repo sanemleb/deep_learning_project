@@ -3,10 +3,11 @@ import torch
 import numpy as np
 import torch.nn as nn
 from modules.model import UNET
-from modules.settings import DATA_PATH,COLAB_PATH, NUM_EPOCHS,BATCH_SIZE,SPLIT_RATIO, LEARNING_RATE, device
+from modules.settings import DATA_PATH,COLAB_PATH, NUM_EPOCHS,BATCH_SIZE,SPLIT_RATIO, LEARNING_RATE, device, num_classes
 from modules.utils import get_data_loaders
 from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
+from modules.dice import dice_loss
 
 def train():
     print(device)
@@ -35,6 +36,9 @@ def train():
 
             outputs = model(images)
             loss = criterion(outputs, masks)
+            loss += dice_loss(torch.nn.functional.softmax(outputs, dim=1).float(),
+                              torch.nn.functional.one_hot(masks, num_classes).permute(0, 3, 1, 2).float(),
+                              multiclass=True)
             loss.backward()
             optimizer.step()
             running_loss += loss.item()
