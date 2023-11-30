@@ -3,11 +3,20 @@ import torch
 import numpy as np
 from PIL import Image
 from torchvision import transforms as T
+import albumentations as A
+from albumentations.pytorch import ToTensorV2
 
 class TestCarDataset(Dataset):
     def __init__(self, mask_paths, transform=None):
         self.all_mask_paths = mask_paths
-        self.transform = T.Compose([T.ToTensor()])
+        self.transform = A.Compose([
+            A.HorizontalFlip(),
+            A.VerticalFlip(),
+            A.GridDistortion(p=0.2),
+            A.RandomBrightnessContrast((0,0.5),(0,0.5)),
+            A.GaussNoise(),
+            ToTensorV2()  # Converts the image to a PyTorch tensor
+        ])
 
     def __len__(self):
         return len(self.all_mask_paths)
@@ -22,8 +31,12 @@ class TestCarDataset(Dataset):
         mask_split = mask_split//10
         mask_split = mask_split.astype(int)
         
-        if self.transform is not None:
-            img = self.transform(img)
+        if self.transform:
+            augmented = self.transform(image=image, mask=mask)
+            image = augmented['image']
+            mask = augmented['mask']
+
+        return image, mask
         
         one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
         ms = torch.from_numpy(one_hot_encoded)

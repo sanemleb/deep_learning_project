@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 import torchvision.transforms.functional as TF
-from modules.settings import num_classes
+from settings import num_classes
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):

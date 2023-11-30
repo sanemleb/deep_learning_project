@@ -50,8 +50,8 @@ num_classes = 10
 SPLIT_RATIO = 0.85
 # train_size = 2530 # 2975 - 445(val) = 2530(train)
 # val_size = 445 # 15% of data for validation
-COLAB_PATH = '/content/drive/MyDrive/data/carseg_data'
-DATA_PATH = r'./data/carseg_data'
+#COLAB_PATH = '/content/drive/MyDrive/data/carseg_data'
+DATA_PATH = r'../data/carseg_data'
 
 # image settings
 IMAGE_WIDTH = 256

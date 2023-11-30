@@ -7,8 +7,11 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision import transforms as T
-from modules.testDataset import TestCarDataset
-from modules.settings import createCarPartsDictionary, DATA_PATH
+from testDataset import TestCarDataset
+from settings import createCarPartsDictionary, DATA_PATH
+import os
+os.environ['KMP_DUPLICATE_LIB_OK']='TRUE'
+
 
 class CarDataset(Dataset):
     def __init__(self, data_dir,transform=None):
@@ -41,18 +44,19 @@ class CarDataset(Dataset):
         mask_split = mask_split//10
         mask_split = mask_split.astype(int)
         
+        # if self.transform is not None:
+        #     img = self.transform(img)
+        #     # print(img[0][:100])
+
+        # Apply Albumentations transformations to both image and mask
         if self.transform is not None:
-            img = self.transform(img)
-            # print(img[0][:100])
+            augmented = self.transform(image=img, mask=mask_split)
+            img = augmented['image']
+            mask_split = augmented['mask']
 
-        t = T.Compose([T.ToTensor()])
-        img = t(img)
-        img = img.to(torch.float32)
+        mask_split = torch.from_numpy(mask_split).long()
 
-        ms = torch.from_numpy(mask_split).long()
-
-
-        return img, ms 
+        return img, mask_split
 
     def create_test_dataset(self):
         test_mask_paths = self.mask_test_photo_paths
@@ -78,55 +82,78 @@ class CarDataset(Dataset):
 
         return mean, std
 
-if __name__ == '__main__':
-    device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+# if __name__ == '__main__':
+#     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 
-    # import torch
-    # # Create a tensor of shape (3,)
-    # tensor = torch.tensor([1, 2, 3])
-    # # Add a singleton dimension at index 0
-    # tensor_unsqueezed = torch.unsqueeze(tensor, 0)
+#     # import torch
+#     # # Create a tensor of shape (3,)
+#     # tensor = torch.tensor([1, 2, 3])
+#     # # Add a singleton dimension at index 0
+#     # tensor_unsqueezed = torch.unsqueeze(tensor, 0)
 
-    # print("Original Tensor:", tensor)
-    # print("Unsqueezed Tensor:", tensor_unsqueezed)
-    # print(tensor.shape)
-    # print(tensor_unsqueezed.shape)
+#     # print("Original Tensor:", tensor)
+#     # print("Unsqueezed Tensor:", tensor_unsqueezed)
+#     # print(tensor.shape)
+#     # print(tensor_unsqueezed.shape)
 
-    num_classes = 10
-    MEAN=[0.485, 0.456, 0.406] # values from ImageNet
-    STD=[0.229, 0.224, 0.225] # values from ImageNet
+#     num_classes = 10
+#     MEAN=[0.485, 0.456, 0.406] # values from ImageNet
+#     STD=[0.229, 0.224, 0.225] # values from ImageNet
 
-    carParts = createCarPartsDictionary()
-    dataset = CarDataset(DATA_PATH, MEAN, STD)
+#     carParts = createCarPartsDictionary()
+#     dataset = CarDataset(DATA_PATH, MEAN, STD)
 
-    # mean, std = dataset.calculate_mean_std()
-    # test = dataset.create_test_dataset()
-    # mean, std= test.calculate_mean_std()
+#     # mean, std = dataset.calculate_mean_std()
+#     # test = dataset.create_test_dataset()
+#     # mean, std= test.calculate_mean_std()
 
-    # print("mean: ", mean)
-    # print("std: ", std)
+#     # print("mean: ", mean)
+#     # print("std: ", std)
 
-    # Test the __getitem__ function
-    index = 0#random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
-    item = dataset.__getitem__(index)
-    # Display the item (for testing purposes)
-    img, mask = item  # Assuming the __getitem__ function returns an image and a mask
+#     # Test the __getitem__ function
+#     index = 0#random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
+#     item = dataset.__getitem__(index)
+#     # Display the item (for testing purposes)
+#     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
 
-    print(img.shape)
-    print(mask.shape)
+#     print(img.shape)
+#     print(mask.shape)
 
-    # # Plot the image and mask side by side
-    # plt.figure(figsize=(10, 5))
-    # # Original Image
-    # plt.subplot(1, 2, 1)
-    # plt.imshow(img)
-    # plt.title('Original Image')
-    # plt.axis('off')
-    # # Segmentation Mask
-    # plt.subplot(1, 2, 2)
-    # plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
-    # plt.title('Segmentation Mask')
-    # plt.axis('off')
-    # plt.show()
+#     # Plot the image and mask side by side
+#     plt.figure(figsize=(10, 5))
+#     # Original Image
+#     plt.subplot(1, 2, 1)
+#     plt.imshow(img)
+#     plt.title('Original Image')
+#     plt.axis('off')
+#     # Segmentation Mask
+#     plt.subplot(1, 2, 2)
+#     plt.imshow(mask, cmap='viridis')  # Adjust the cmap as needed
+#     plt.title('Segmentation Mask')
+#     plt.axis('off')
+#     plt.show()
     
+
+if __name__ == '__main__':
+    dataset = TestCarDataset(DATA_PATH)  
+
+    index = random.randint(0, len(dataset) - 1)
+    img, mask = dataset[index]  # Get transformed image and mask
+
+    # Convert the PyTorch tensors to numpy arrays for plotting
+    img_np = img.numpy().transpose(1, 2, 0)  # Convert from (C, H, W) to (H, W, C)
+    mask_np = mask.numpy()  # Assuming the mask is already in (H, W) format
+
+    plt.figure(figsize=(10, 5))
+    plt.subplot(1, 2, 1)
+    plt.imshow(img_np)
+    plt.title('Transformed Image')
+    plt.axis('off')
+
+    plt.subplot(1, 2, 2)
+    plt.imshow(mask_np, cmap='viridis')  # Adjust cmap as needed
+    plt.title('Transformed Mask')
+    plt.axis('off')
+
+    plt.show()
