@@ -24,8 +24,8 @@ class CarDataset(Dataset):
         self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
         # combine mask paths into 1 object, but not test masks
-        # self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
-        self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
+        # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
 
  
     def __len__(self):
