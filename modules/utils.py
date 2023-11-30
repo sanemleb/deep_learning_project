@@ -91,11 +91,12 @@ def mean_pixel_accuracy(predicted_list, target_list):
     mean_accuracy = total_accuracy / num_images
     return mean_accuracy
 
-def save_metric_to_file(file_name, model_name, mean_accuracy):
+def save_metric_to_file(file_name, model_type, model_name, mean_accuracy):
     """
-    Save model name and mean accuracy to a text file.
+    Save model type, name, and mean accuracy to a text file.
 
     Args:
+        model_type (str): Type of the model.
         model_name (str): Name of the model.
         mean_accuracy (float): Mean accuracy value to be saved.
         file_name (str): Name of the text file.
@@ -106,10 +107,10 @@ def save_metric_to_file(file_name, model_name, mean_accuracy):
     try:
         # Open the file in append mode
         with open(file_name, 'a') as file:
-            # Write the model name, mean accuracy, and a newline
-            file.write(f"{model_name}   Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
+            # Write the model type, name, mean accuracy, and a newline
+            file.write(f"{model_type} - {model_name} Mean Accuracy: {mean_accuracy:.5f}\n")
     except FileNotFoundError:
         # If the file doesn't exist, create a new file
         with open(file_name, 'w') as file:
-            file.write(f"{model_name}   Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
+            file.write(f"{model_type} - {model_name} Mean Accuracy: {mean_accuracy:.5f}\n")
 
