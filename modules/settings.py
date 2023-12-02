@@ -63,7 +63,7 @@ STD=[0.229, 0.224, 0.225] # values from ImageNet
 BATCH_SIZE = 16
 LEARNING_RATE = 1e-3
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 5
+NUM_EPOCHS = 9
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')

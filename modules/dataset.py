@@ -9,13 +9,14 @@ from torchvision import transforms
 from torchvision import transforms as T
 from modules.testDataset import TestCarDataset
 from modules.settings import createCarPartsDictionary, DATA_PATH
+from torchvision.transforms.functional import to_pil_image
 
 class CarDataset(Dataset):
     def __init__(self, data_dir,transform=None):
         self.data_dir = data_dir
         # self.mean = mean
         # self.std = std
-        self.transform = transform
+        # self.transform = transform
 
         # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
@@ -25,6 +26,10 @@ class CarDataset(Dataset):
 
         self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
         # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
+        
+        color_jitter_transform = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2)
+        self.transform=transforms.Compose([color_jitter_transform, transforms.Resize((256, 256)), transforms.ToTensor()])
+        self.transform_vanilla = transforms.Compose([transforms.ToTensor()]) 
 
  
     def __len__(self):
@@ -39,16 +44,35 @@ class CarDataset(Dataset):
         mask_split = mask[:, :, 3]
         mask_split = mask_split.astype(int)
         
+        original_img = img.copy()
+        
         if self.transform is not None:
-            img = self.transform(img)
-            # print(img[0][:100])
+            if(idx%2 == 0):
+                img_pil = Image.fromarray(img)  # Convert NumPy array to PIL Image
+                img_transformed = self.transform(img_pil)
+            else:
+                img_transformed = self.transform_vanilla(img)
 
-        t = T.Compose([T.ToTensor()])
-        img = t(img)
-        img = img.to(torch.float32)
-
+        img = img_transformed.to(torch.float32)
         ms = torch.from_numpy(mask_split).long()
+        
+        
+        # # Visualization code
+        # plt.figure(figsize=(8, 4))
 
+        # # Plot original image
+        # plt.subplot(1, 2, 1)
+        # plt.imshow(original_img)
+        # plt.title('Original Image')
+        # plt.axis('off')
+
+        # # Plot augmented image
+        # plt.subplot(1, 2, 2)
+        # plt.imshow(to_pil_image(img_transformed))
+        # plt.title('Augmented Image')
+        # plt.axis('off')
+
+        # plt.show()
 
         return img, ms 
 
@@ -91,12 +115,12 @@ if __name__ == '__main__':
     # print(tensor.shape)
     # print(tensor_unsqueezed.shape)
 
-    num_classes = 10
-    MEAN=[0.485, 0.456, 0.406] # values from ImageNet
-    STD=[0.229, 0.224, 0.225] # values from ImageNet
+    # num_classes = 10
+    # MEAN=[0.485, 0.456, 0.406] # values from ImageNet
+    # STD=[0.229, 0.224, 0.225] # values from ImageNet
 
     carParts = createCarPartsDictionary()
-    dataset = CarDataset(DATA_PATH, MEAN, STD)
+    dataset = CarDataset(DATA_PATH)
 
     # mean, std = dataset.calculate_mean_std()
     # test = dataset.create_test_dataset()
@@ -106,13 +130,10 @@ if __name__ == '__main__':
     # print("std: ", std)
 
     # Test the __getitem__ function
-    index = 0#random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
+    index = 40 #random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
     item = dataset.__getitem__(index)
     # Display the item (for testing purposes)
     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
-
-    print(img.shape)
-    print(mask.shape)
 
     # # Plot the image and mask side by side
     # plt.figure(figsize=(10, 5))
