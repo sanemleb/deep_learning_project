@@ -22,10 +22,8 @@ class CarDataset(Dataset):
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
-        self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
         self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
-        # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
         
         color_jitter_transform = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2)
         self.transform=transforms.Compose([color_jitter_transform, transforms.Resize((256, 256)), transforms.ToTensor()])
@@ -130,7 +128,7 @@ if __name__ == '__main__':
     # print("std: ", std)
 
     # Test the __getitem__ function
-    index = 40 #random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
+    index = 1802 #random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
     item = dataset.__getitem__(index)
     # Display the item (for testing purposes)
     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
