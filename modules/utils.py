@@ -1,6 +1,7 @@
 from torch.utils.data import random_split, DataLoader, Subset
 from modules.dataset import CarDataset
 from torch import Tensor
+import torch
 
 # def get_data_loaders(data_path, batch_size, split_ratio, random_seed=42):
 #     car_dataset = CarDataset(data_path)
@@ -91,6 +92,27 @@ def mean_pixel_accuracy(predicted_list, target_list):
     mean_accuracy = total_accuracy / num_images
     return mean_accuracy
 
+def dice_coefficient(predicted, target, smooth=1e-5):
+    """
+    Calculate the Dice Coefficient.
+
+    Args:
+        predicted (torch.Tensor): Predicted binary mask.
+        target (torch.Tensor): Ground truth binary mask.
+        smooth (float): Smoothing factor to avoid division by zero.
+
+    Returns:
+        float: Dice Coefficient.
+    """
+    intersection = (predicted * target).sum()
+    total_area_pred = predicted.sum()
+    total_area_gt = target.sum()
+
+    dice = (2.0 * intersection + smooth) / (total_area_pred + total_area_gt + smooth)
+    return dice.item()
+
+
+
 def save_metric_to_file(file_name, model_type, model_name, mean_accuracy):
     """
     Save model type, name, and mean accuracy to a text file.
@@ -108,9 +130,9 @@ def save_metric_to_file(file_name, model_type, model_name, mean_accuracy):
         # Open the file in append mode
         with open(file_name, 'a') as file:
             # Write the model type, name, mean accuracy, and a newline
-            file.write(f"{model_type} - {model_name} Mean Accuracy: {mean_accuracy:.5f}\n")
+            file.write(f"{model_type} - {model_name} Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
     except FileNotFoundError:
         # If the file doesn't exist, create a new file
         with open(file_name, 'w') as file:
-            file.write(f"{model_type} - {model_name} Mean Accuracy: {mean_accuracy:.5f}\n")
+            file.write(f"{model_type} - {model_name} Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
 

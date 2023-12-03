@@ -3,14 +3,16 @@ import torch
 import numpy as np
 import torch.nn as nn
 from modules.model import UNET
-from modules.settings import DATA_PATH,COLAB_PATH, NUM_EPOCHS,BATCH_SIZE,SPLIT_RATIO, LEARNING_RATE, device
+from modules.unetPP import UNetPP
+from modules.settings import DATA_PATH, num_classes, NUM_EPOCHS,BATCH_SIZE,SPLIT_RATIO, LEARNING_RATE, device
 from modules.utils import get_data_loaders
 from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
 
 def train():
     print(device)
-    model = UNET(in_channels=3, out_channels=10)
+    # model = UNET(in_channels=3, out_channels=10)
+    model = UNetPP(num_classes)
     model.to(device)
     # print(summary(model, (3, 256, 256)) )
 
