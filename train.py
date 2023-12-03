@@ -36,7 +36,7 @@ def train():
 
             outputs = model(images)
             loss = criterion(outputs, masks)
-            loss += dice_loss(torch.nn.functional.softmax(outputs, dim=1).float(),
+            loss = dice_loss(torch.nn.functional.softmax(outputs, dim=1).float(),
                               torch.nn.functional.one_hot(masks, num_classes).permute(0, 3, 1, 2).float(),
                               multiclass=True)
             loss.backward()
@@ -57,6 +57,9 @@ def train():
 
                 outputs = model(images)
                 loss = criterion(outputs, masks)
+                loss = dice_loss(torch.nn.functional.softmax(outputs, dim=1).float(),
+                              torch.nn.functional.one_hot(masks, num_classes).permute(0, 3, 1, 2).float(),
+                              multiclass=True)
                 val_loss += loss.item()
 
         average_val_loss = val_loss / len(val_dl)
