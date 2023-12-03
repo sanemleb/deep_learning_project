@@ -1,6 +1,8 @@
 from torch.utils.data import random_split, DataLoader
 from modules.dataset import CarDataset
 import numpy as np
+import torchvision.transforms.functional as F
+import torch
 
 def get_data_loaders(data_path, batch_size, split_ratio=0.8):
     dataset = CarDataset(data_path)
@@ -19,7 +21,23 @@ def get_data_loaders(data_path, batch_size, split_ratio=0.8):
 
     return train_loader, val_loader
 
+class AddGaussianNoise(object):
+    def __init__(self, mean=0, std=1):
+        self.mean = mean
+        self.std = std
 
+    def __call__(self, pil_image):
+        # Convert PIL image to a PyTorch tensor
+        tensor_image = F.to_tensor(pil_image)
+
+        # Adding Gaussian noise to the tensor
+        noise = torch.randn_like(tensor_image) * self.std + self.mean
+        noisy_tensor = tensor_image + noise
+
+        # Convert the noisy tensor back to a PIL image
+        noisy_pil_image = F.to_pil_image(noisy_tensor)
+
+        return noisy_pil_image
 
 # Evaluation functions
 

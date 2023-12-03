@@ -64,7 +64,7 @@ BATCH_SIZE = 16
 LEARNING_RATE = 1e-3
 DROPOUT = 0.5
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
-NUM_EPOCHS = 50
+NUM_EPOCHS = 70
 NUM_WORKERS = 2
 
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
