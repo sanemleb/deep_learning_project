@@ -1,13 +1,13 @@
 import torch
 import torch.nn as nn
 import torchvision.transforms.functional as TF
-from modules.settings import num_classes
+from modules.settings import num_classes, DROPOUT
 
 class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False), 
+            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False), 
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
@@ -43,7 +43,7 @@ class UNET(nn.Module):
 
         self.bottleneck = DoubleConv(features[-1], features[-1]*2)
         self.final_conv = nn.Conv2d(features[0], out_channels, kernel_size=1)
-        self.dropout = nn.Dropout(p=0.1)
+        # self.dropout = nn.Dropout(p=0.1)
 
     def forward(self, x):
         skip_connections = []
@@ -76,12 +76,12 @@ class UNET(nn.Module):
 def test():
     x = torch.randn((9, 3, 256, 256))
     model = UNET(in_channels=3, out_channels=10)
-    # target = torch.randint(0, num_classes, (9, 256, 256), dtype=torch.long)
+    target = torch.randint(0, num_classes, (9, 256, 256), dtype=torch.long)
 
-    # criterion = nn.CrossEntropyLoss()
+    criterion = nn.CrossEntropyLoss()
     pred = model(x)
-    # loss = criterion(pred, target)
-    # loss.backward()
+    loss = criterion(pred, target)
+    loss.backward()
 
     print(x.shape)
     print(pred.shape)

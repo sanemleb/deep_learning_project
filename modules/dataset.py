@@ -7,25 +7,19 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision import transforms as T
-from modules.testDataset import TestCarDataset
 from modules.settings import createCarPartsDictionary, DATA_PATH
+from torchvision.transforms.functional import to_pil_image
 
 class CarDataset(Dataset):
-    def __init__(self, data_dir,transform=None):
+    def __init__(self, data_dir ):
         self.data_dir = data_dir
-        # self.mean = mean
-        # self.std = std
-        self.transform = transform
-
-        # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
-        self.mask_test_photo_paths = self.mask_photo_paths[:30]
 
-        # combine mask paths into 1 object, but not test masks
-        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths[30:]
-        # self.all_mask_paths = self.mask_5door_paths + self.mask_photo_paths[30:]
+        self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
+
+        self.transform_vanilla = transforms.Compose([transforms.ToTensor()]) 
 
  
     def __len__(self):
@@ -35,30 +29,17 @@ class CarDataset(Dataset):
         
         mask_path = self.all_mask_paths[idx]
         
-        mask = np.load(mask_path)
+        mask = np.load(mask_path, allow_pickle=True)
         img = mask[:, :, :3]
         mask_split = mask[:, :, 3]
-        mask_split = mask_split//10
         mask_split = mask_split.astype(int)
         
-        if self.transform is not None:
-            img = self.transform(img)
-            # print(img[0][:100])
+        img_transformed = self.transform_vanilla(img)
 
-        t = T.Compose([T.ToTensor()])
-        img = t(img)
-        img = img.to(torch.float32)
-
+        img = img_transformed.to(torch.float32)
         ms = torch.from_numpy(mask_split).long()
 
-
         return img, ms 
-
-    def create_test_dataset(self):
-        test_mask_paths = self.mask_test_photo_paths
-
-        test_dataset = TestCarDataset(test_mask_paths)
-        return test_dataset
     
     def calculate_mean_std(self):
         # Calculate mean and std
@@ -93,12 +74,12 @@ if __name__ == '__main__':
     # print(tensor.shape)
     # print(tensor_unsqueezed.shape)
 
-    num_classes = 10
-    MEAN=[0.485, 0.456, 0.406] # values from ImageNet
-    STD=[0.229, 0.224, 0.225] # values from ImageNet
+    # num_classes = 10
+    # MEAN=[0.485, 0.456, 0.406] # values from ImageNet
+    # STD=[0.229, 0.224, 0.225] # values from ImageNet
 
     carParts = createCarPartsDictionary()
-    dataset = CarDataset(DATA_PATH, MEAN, STD)
+    dataset = CarDataset(DATA_PATH)
 
     # mean, std = dataset.calculate_mean_std()
     # test = dataset.create_test_dataset()
@@ -108,13 +89,10 @@ if __name__ == '__main__':
     # print("std: ", std)
 
     # Test the __getitem__ function
-    index = 0#random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
+    index = 1802 #random.randint(0, len(dataset))  # Change this to the index of the item you want to retrieve
     item = dataset.__getitem__(index)
     # Display the item (for testing purposes)
     img, mask = item  # Assuming the __getitem__ function returns an image and a mask
-
-    print(img.shape)
-    print(mask.shape)
 
     # # Plot the image and mask side by side
     # plt.figure(figsize=(10, 5))
