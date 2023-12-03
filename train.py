@@ -3,11 +3,12 @@ import torch
 import numpy as np
 import torch.nn as nn
 from modules.model import UNET
-from modules.settings import DATA_PATH,COLAB_PATH, NUM_EPOCHS,BATCH_SIZE,SPLIT_RATIO, LEARNING_RATE, device, num_classes
+from modules.settings import DATA_PATH, COLAB_PATH, NUM_EPOCHS, BATCH_SIZE, SPLIT_RATIO, LEARNING_RATE, device, num_classes
 from modules.utils import get_data_loaders
 from torch.utils.tensorboard import SummaryWriter
 from torchsummary import summary
 from modules.dice import dice_loss
+import os
 
 def train():
     print(device)
@@ -25,6 +26,9 @@ def train():
 
     train_epoch_losses = []
     val_epoch_losses = []
+
+    output_models_dir = "output_models"
+    os.makedirs(output_models_dir, exist_ok=True)
 
     for epoch in range(NUM_EPOCHS):
         model.train()
@@ -68,17 +72,20 @@ def train():
 
         print(f"Epoch {epoch + 1}/{NUM_EPOCHS}, Loss: {average_loss:.4f}, Val Loss: {average_val_loss:.4f}")
 
+        # Save the trained model every 5 epochs
+        if (epoch + 1) % 5 == 0:
+            model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
+            torch.save(model.state_dict(), model_save_path)
+            print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
+
     # Save the trained model
     torch.save(model.state_dict(), "unet_model.pth")
-    
-    # Save the loss data 
+
+    # Save the loss data
     file = "loss_data.txt"
     data = np.column_stack((np.arange(len(train_epoch_losses)), train_epoch_losses, val_epoch_losses))
     np.savetxt(file, data, header="Index Train_Loss Val_Loss", comments="", fmt="%d %.4f %.4f")
     return file
-    
+
 if __name__ == "__main__":
     train()
-    
-    
-

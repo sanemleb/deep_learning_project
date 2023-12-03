@@ -7,26 +7,18 @@ from PIL import Image
 from torch.utils.data import Dataset
 from torchvision import transforms
 from torchvision import transforms as T
-from modules.testDataset import TestCarDataset
 from modules.settings import createCarPartsDictionary, DATA_PATH
 from torchvision.transforms.functional import to_pil_image
 
 class CarDataset(Dataset):
-    def __init__(self, data_dir,transform=None):
+    def __init__(self, data_dir ):
         self.data_dir = data_dir
-        # self.mean = mean
-        # self.std = std
-        # self.transform = transform
-
-        # getting the masks
         self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
         self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
         self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
 
         self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
-        
-        color_jitter_transform = transforms.ColorJitter(brightness=0.2, contrast=0.2, saturation=0.2, hue=0.2)
-        self.transform=transforms.Compose([color_jitter_transform, transforms.Resize((256, 256)), transforms.ToTensor()])
+
         self.transform_vanilla = transforms.Compose([transforms.ToTensor()]) 
 
  
@@ -42,43 +34,12 @@ class CarDataset(Dataset):
         mask_split = mask[:, :, 3]
         mask_split = mask_split.astype(int)
         
-        original_img = img.copy()
-        
-        if self.transform is not None:
-            if(idx%2 == 0):
-                img_pil = Image.fromarray(img)  # Convert NumPy array to PIL Image
-                img_transformed = self.transform(img_pil)
-            else:
-                img_transformed = self.transform_vanilla(img)
+        img_transformed = self.transform_vanilla(img)
 
         img = img_transformed.to(torch.float32)
         ms = torch.from_numpy(mask_split).long()
-        
-        
-        # # Visualization code
-        # plt.figure(figsize=(8, 4))
-
-        # # Plot original image
-        # plt.subplot(1, 2, 1)
-        # plt.imshow(original_img)
-        # plt.title('Original Image')
-        # plt.axis('off')
-
-        # # Plot augmented image
-        # plt.subplot(1, 2, 2)
-        # plt.imshow(to_pil_image(img_transformed))
-        # plt.title('Augmented Image')
-        # plt.axis('off')
-
-        # plt.show()
 
         return img, ms 
-
-    def create_test_dataset(self):
-        test_mask_paths = self.mask_test_photo_paths
-
-        test_dataset = TestCarDataset(test_mask_paths)
-        return test_dataset
     
     def calculate_mean_std(self):
         # Calculate mean and std
