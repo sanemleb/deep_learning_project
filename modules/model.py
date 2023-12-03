@@ -7,7 +7,7 @@ class DoubleConv(nn.Module):
     def __init__(self, in_channels, out_channels):
         super(DoubleConv, self).__init__()
         self.conv = nn.Sequential(
-            nn.Conv2d(in_channels, out_channels, 3, 1, 1, bias=False), 
+            nn.Conv2d(in_channels, out_channels, kernel_size=3, stride=1, padding=1, bias=False), 
             nn.BatchNorm2d(out_channels),
             nn.ReLU(inplace=True),
             nn.Conv2d(out_channels, out_channels, 3, 1, 1, bias=False),
@@ -76,12 +76,12 @@ class UNET(nn.Module):
 def test():
     x = torch.randn((9, 3, 256, 256))
     model = UNET(in_channels=3, out_channels=10)
-    target = torch.randint(0, num_classes, (9, 256, 256), dtype=torch.long)
+    # target = torch.randint(0, num_classes, (9, 256, 256), dtype=torch.long)
 
-    criterion = nn.CrossEntropyLoss()
+    # criterion = nn.CrossEntropyLoss()
     pred = model(x)
-    loss = criterion(pred, target)
-    loss.backward()
+    # loss = criterion(pred, target)
+    # loss.backward()
 
     print(x.shape)
     print(pred.shape)
