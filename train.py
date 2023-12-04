@@ -2,7 +2,7 @@ from tqdm import tqdm
 import torch
 import numpy as np
 import torch.nn as nn
-from modules.model import UNET
+from modules.model import UNET, UNET_RESNET
 from modules.unetPP import UNetPP
 from modules.settings import DATA_PATH, COLAB_PATH, NUM_EPOCHS, BATCH_SIZE, SPLIT_RATIO, LEARNING_RATE, device, num_classes
 from modules.utils import get_data_loaders
@@ -14,6 +14,7 @@ import os
 def train(saveIntermediateModels=False):
     print(device)
     model = UNET(in_channels=3, out_channels=10)
+    # model = UNET_RESNET(in_channels=3, out_channels=10)
     # model = UNetPP(num_classes)
     model.to(device)
     # print(summary(model, (3, 256, 256)) )
