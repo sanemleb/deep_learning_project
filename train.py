@@ -84,16 +84,19 @@ def train(true_if_unet_resnet = False, data_dir = "arrays", saveIntermediateMode
             # Save the trained model every 10 epochs after the 50th epoch
             if (epoch + 1) % 10 == 0:
                 model_save_path = os.path.join("experiment_outputs", output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
+                os.makedirs(os.path.join("experiment_outputs", output_models_dir), exist_ok=True)
                 torch.save(model.state_dict(), model_save_path)
                 print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
         
     if not saveIntermediateModels:
         # Save the trained model at the end
+        os.makedirs(os.path.join("experiment_outputs", output_models_dir), exist_ok=True)
         torch.save(model.state_dict(), os.path.join("experiment_outputs", output_models_dir, f"unet_model_epoch_{epoch + 1}.pth"))
 
     # Save the loss data
     data = np.column_stack((np.arange(len(train_epoch_losses)), train_epoch_losses, val_epoch_losses))
     path = os.path.join("experiment_outputs", output_models_dir, "loss_data.txt")
+    os.makedirs(os.path.join("experiment_outputs", output_models_dir), exist_ok=True)
     np.savetxt(path, data, header="Index Train_Loss Val_Loss", comments="", fmt="%d %.4f %.4f")
     return path
 
