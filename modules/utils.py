@@ -1,6 +1,8 @@
 from torch.utils.data import random_split, DataLoader
 from modules.dataset import CarDataset
 import numpy as np
+import torch.nn.functional as F
+import torch.nn as nn
 import torch
 
 def get_data_loaders(data_path, batch_size, split_ratio=0.8):
@@ -20,7 +22,52 @@ def get_data_loaders(data_path, batch_size, split_ratio=0.8):
 
     return train_loader, val_loader
 
+class AddGaussianNoise(object):
+    def __init__(self, mean=0, std=1):
+        self.mean = mean
+        self.std = std
 
+    def __call__(self, pil_image):
+        # Convert PIL image to a PyTorch tensor
+        tensor_image = F.to_tensor(pil_image)
+
+        # Adding Gaussian noise to the tensor
+        noise = torch.randn_like(tensor_image) * self.std + self.mean
+        noisy_tensor = tensor_image + noise
+
+        # Convert the noisy tensor back to a PIL image
+        noisy_pil_image = F.to_pil_image(noisy_tensor)
+
+        return noisy_pil_image
+
+class FocalLoss(nn.Module):
+    def __init__(self, gamma=2, weight=None, size_average=True):
+        super(FocalLoss, self).__init__()
+        self.gamma = gamma
+        self.weight = weight
+        self.size_average = size_average
+
+    def forward(self, input, target):
+        if input.dim() > 2:
+            input = input.view(input.size(0), input.size(1), -1)  # N,C,H,W => N,C,H*W
+            input = input.transpose(1, 2)  # N,C,H*W => N,H*W,C
+            input = input.contiguous().view(-1, input.size(2))  # N,H*W,C => N*H*W,C
+        target = target.view(-1, 1)
+
+        logpt = F.log_softmax(input, dim=1)
+        logpt = logpt.gather(1, target)
+        logpt = logpt.view(-1)
+        pt = torch.exp(logpt)
+
+        if self.weight is not None:
+            pt = pt * self.weight.gather(0, target.view(-1))
+
+        loss = -((1 - pt) ** self.gamma) * logpt
+
+        if self.size_average:
+            return loss.mean()
+        else:
+            return loss.sum()
 
 # Evaluation functions
 
