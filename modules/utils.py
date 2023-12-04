@@ -108,7 +108,7 @@ def mean_pixel_accuracy(predicted_list, target_list):
     mean_accuracy = total_accuracy / num_images
     return mean_accuracy
 
-def dice_coefficient(predicted, target, smooth=1e-5):
+def dice_coefficient(y_true, y_pred, axis=(2, 3), smooth=1e-5):
     """
     Calculate the Dice Coefficient.
 
@@ -120,16 +120,36 @@ def dice_coefficient(predicted, target, smooth=1e-5):
     Returns:
         float: Dice Coefficient.
     """
-    intersection = (predicted * target).sum()
-    total_area_pred = predicted.sum()
-    total_area_gt = target.sum()
 
-    dice = (2.0 * intersection + smooth) / (total_area_pred + total_area_gt + smooth)
-    return dice.item()
+    intersection = torch.sum(y_true * y_pred, dim=axis)
+    union = torch.sum(y_true, dim=axis) + torch.sum(y_pred, dim=axis)
+    dice = (2.0 * intersection + smooth) / (union + smooth)
+    mean = weighted_average_dice(y_true, dice)
+    return mean, dice
 
 
+def weighted_average_dice(mask, dice_scores):
+    """
+    Calculate the weighted average Dice score based on the pixel count of each class.
 
-def save_metric_to_file(file_name, model_type, model_name, mean_accuracy):
+    Parameters:
+    - mask: A 3D array representing the segmentation mask with shape (num_classes, height, width).
+    - dice_scores: A 1D array containing Dice scores for each class.
+
+    Returns:
+    - Weighted average Dice score.
+    """
+    mask = mask[0]
+    # Calculate pixel count for each class
+    class_sizes = torch.sum(mask, axis=(1, 2))  # Sum along height and width dimensions
+
+    # Calculate the weighted mean Dice score
+    weighted_mean_dice = torch.sum(dice_scores * class_sizes / torch.sum(class_sizes))
+
+    return weighted_mean_dice
+
+
+def save_metric_to_file(file_name, model_type, model_name, mean_accuracy, mean_dice):
     """
     Save model type, name, and mean accuracy to a text file.
 
@@ -147,8 +167,80 @@ def save_metric_to_file(file_name, model_type, model_name, mean_accuracy):
         with open(file_name, 'a') as file:
             # Write the model type, name, mean accuracy, and a newline
             file.write(f"{model_type} - {model_name} Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
+            file.write(f"{model_type} - {model_name} Mean Dice Score: {mean_dice:.5f}\n")
     except FileNotFoundError:
         # If the file doesn't exist, create a new file
         with open(file_name, 'w') as file:
             file.write(f"{model_type} - {model_name} Mean Pixel Accuracy: {mean_accuracy:.5f}\n")
+            file.write(f"{model_type} - {model_name} Mean Dice Score: {mean_dice:.5f}\n")
 
+
+def save_dice_loss_to_file(file_name, outputs, masks, filenames_in_order):
+
+    model_output_mean_dice = []
+    model_output_dice_per_class = []
+    class_average_dice = []
+    
+    for i in range(0,len(outputs)):
+        
+        one_hot_encoded = np.eye(10, dtype=int)[masks[i].squeeze()]
+        dice_mask = np.expand_dims(one_hot_encoded.transpose(2,0,1), axis=0)
+        mean_dice, dice_per_class = dice_coefficient(torch.from_numpy(dice_mask), torch.nn.functional.one_hot(outputs[i], num_classes=10).permute(2,0,1).unsqueeze(0))
+        model_output_mean_dice.append(mean_dice)
+        model_output_dice_per_class.append(dice_per_class)
+        
+    for i in range(0,10):
+        dice_sum = 0
+        for j in range(0, len(model_output_dice_per_class)):
+            dice_sum += model_output_dice_per_class[j][0][i].item()
+        class_average_dice.append(dice_sum/len(model_output_dice_per_class))
+        
+    
+    try:
+        # Open the file in append mode
+        with open(file_name, 'w+') as file:
+            pass
+        with open(file_name, 'a') as file:
+            # Write the model type, name, mean accuracy, and a newline
+            file.write(f"DICE SCORE RESULTS FOR {len(outputs)} TEST IMAGES\n")
+            file.write(f"\n \n")
+            file.write(f"\n \n")
+
+            for i in range(0, len(filenames_in_order)):
+                file.write(f"Test Image {filenames_in_order[i]} Dice Score Results\n")
+                file.write(f"\n")
+                file.write(f"Mean Dice Score: {model_output_mean_dice[i]}\n")
+                file.write(f"\n")
+                for j in range(0, 10):
+                    file.write(f"Dice Score for class {j}: {model_output_dice_per_class[i][0][j]}\n")
+                file.write(f"\n \n")
+                    
+            file.write(f"AVERAGE DICE SCORE PER CLASS: \n")
+            file.write(f"\n \n")
+            for m in range(0, 10):
+                file.write(f"Dice Score for class {m}: {class_average_dice[m]}\n")
+
+    except FileNotFoundError:
+        # If the file doesn't exist, create a new file
+        with open(file_name, 'w') as file:
+            # Write the model type, name, mean accuracy, and a newline
+            file.write(f"DICE SCORE RESULTS FOR {len(outputs)} TEST IMAGES\n")
+            file.write(f"\n \n")
+            file.write(f"\n \n")
+
+            for i in range(0, len(filenames_in_order)):
+                file.write(f"Test Image {filenames_in_order[i]} Dice Score Results\n")
+                file.write(f"\n")
+                file.write(f"Mean Dice Score: {model_output_mean_dice[i]}\n")
+                file.write(f"\n")
+                for j in range(0, 10):
+                    file.write(f"Dice Score for class {j}: {model_output_dice_per_class[i][0][j]}\n")
+                file.write(f"\n \n")
+                    
+            file.write(f"AVERAGE DICE SCORE PER CLASS: \n")
+            file.write(f"\n \n")
+            for m in range(0, 10):
+                file.write(f"Dice Score for class {m}: {class_average_dice[m]}\n")
+            
+    length = len(model_output_mean_dice)
+    return sum(model_output_mean_dice).item()/length

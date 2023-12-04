@@ -5,3 +5,4 @@ runs/
 models/
 drone_dataset/
 scores.txt
+dice_scores.txt
