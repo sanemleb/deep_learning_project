@@ -144,8 +144,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 1 -- UNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_1_unet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_1_unet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=False)
     test(mdl, "arrays_1_unet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_1_unet_" + ep + "_epoch_loss")
@@ -153,8 +153,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 2 -- UNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_2_unet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_2_unet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=False)
     test(mdl, "arrays_2_unet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_2_unet_" + ep + "_epoch_loss")
@@ -162,8 +162,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 3 -- UNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_3_unet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_3_unet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=False)
     test(mdl, "arrays_3_unet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_3_unet_" + ep + "_epoch_loss")
@@ -171,8 +171,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 4 -- UNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_4_unet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_4_unet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=False)
     test(mdl, "arrays_4_unet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_4_unet_" + ep + "_epoch_loss")
@@ -185,8 +185,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 0 -- UNET_RESNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_0_unet_resnet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_0_unet_resnet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=True)
     test(mdl, "arrays_0_unet_resnet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_0_unet_resnet_" + ep + "_epoch_loss")
@@ -194,8 +194,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 1 -- UNET_RESNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_1_unet_resnet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_1_unet_resnet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=True)
     test(mdl, "arrays_1_unet_resnet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_1_unet_resnet_" + ep + "_epoch_loss")
@@ -203,8 +203,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 2 -- UNET_RESNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_2_unet_resnet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_2_unet_resnet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=True)
     test(mdl, "arrays_2_unet_resnet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_2_unet_resnet_" + ep + "_epoch_loss")
@@ -212,8 +212,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 3 -- UNET_RESNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_3_unet_resnet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_3_unet_resnet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=True)
     test(mdl, "arrays_3_unet_resnet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_3_unet_resnet_" + ep + "_epoch_loss")
@@ -221,8 +221,8 @@ if __name__ == "__main__":
     
     ############# ARRAYS 4 -- UNET_RESNET #####################
     ep = "40"
-    path_model = ""
-    path_txt = ""
+    path_model = "./models/experiment_outputs/output_models_arrays_4_unet_resnet/unet_model_epoch_40.pth"
+    path_txt = "./models/experiment_outputs/output_models_arrays_4_unet_resnet/loss_data.txt"
     mdl = load(model_path=path_model, is_resnet=True)
     test(mdl, "arrays_4_unet_resnet_", ep + "_epochs")
     save_plot_loss_from_txt(path_txt, "./models/experiment_results/" + "arrays_4_unet_resnet_" + ep + "_epoch_loss")

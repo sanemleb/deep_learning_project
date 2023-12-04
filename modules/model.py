@@ -194,14 +194,14 @@ class UNET_RESNET(nn.Module):
 
         for i, block in enumerate(self.down_blocks, 2):
             x = block(x)
-            if i == (UNET.DEPTH - 1):
+            if i == (UNET_RESNET.DEPTH - 1):
                 continue
             pre_pools[f"layer_{i}"] = x
 
         x = self.bridge(x)
 
         for i, block in enumerate(self.up_blocks, 1):
-            key = f"layer_{UNET.DEPTH - 1 - i}"
+            key = f"layer_{UNET_RESNET.DEPTH - 1 - i}"
             x = block(x, pre_pools[key])
         output_feature_map = x
         x = self.out(x)
