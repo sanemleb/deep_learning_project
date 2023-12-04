@@ -77,10 +77,11 @@ def train(saveIntermediateModels=False):
 
         if saveIntermediateModels:
             # Save the trained model every 5 epochs
-            if (epoch + 1) % 20 == 0:
-                model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
-                torch.save(model.state_dict(), model_save_path)
-                print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
+            if (epoch + 1) % 10 == 0:
+                if (epoch + 1) / 10 > 4:
+                    model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
+                    torch.save(model.state_dict(), model_save_path)
+                    print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
 
     # Save the trained model
     torch.save(model.state_dict(), "unet_model.pth")
