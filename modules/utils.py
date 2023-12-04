@@ -5,8 +5,8 @@ import torch.nn.functional as F
 import torch.nn as nn
 import torch
 
-def get_data_loaders(data_path, batch_size, split_ratio=0.8):
-    dataset = CarDataset(data_path)
+def get_data_loaders(data_dir, data_path, batch_size, split_ratio=0.8):
+    dataset = CarDataset(data_path, data_dir)
 
     # Calculate the number of samples for training and validation based on the split ratio
     num_samples = len(dataset)

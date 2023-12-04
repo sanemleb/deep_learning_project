@@ -11,11 +11,11 @@ from modules.settings import createCarPartsDictionary, DATA_PATH
 from torchvision.transforms.functional import to_pil_image
 
 class CarDataset(Dataset):
-    def __init__(self, data_dir ):
+    def __init__(self, data_dir , data_dir_path):
         self.data_dir = data_dir
-        self.mask_5door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "black" in mask]
-        self.mask_3door_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "orange" in mask]
-        self.mask_photo_paths = [os.path.join(data_dir,'arrays', mask) for mask in os.listdir(os.path.join(data_dir, 'arrays')) if "photo" in mask]
+        self.mask_5door_paths = [os.path.join(data_dir,data_dir_path, mask) for mask in os.listdir(os.path.join(data_dir, data_dir_path)) if "black" in mask]
+        self.mask_3door_paths = [os.path.join(data_dir,data_dir_path, mask) for mask in os.listdir(os.path.join(data_dir, data_dir_path)) if "orange" in mask]
+        self.mask_photo_paths = [os.path.join(data_dir,data_dir_path, mask) for mask in os.listdir(os.path.join(data_dir, data_dir_path)) if "photo" in mask]
 
         self.all_mask_paths = self.mask_5door_paths + self.mask_3door_paths + self.mask_photo_paths
 

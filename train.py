@@ -11,18 +11,20 @@ from torchsummary import summary
 from modules.dice import dice_loss
 import os
 
-def train(saveIntermediateModels=False):
+def train(true_if_unet_resnet = False, data_dir = "arrays", saveIntermediateModels = False):
     print(device)
-    model = UNET(in_channels=3, out_channels=10)
-    # model = UNET_RESNET(in_channels=3, out_channels=10)
-    # model = UNetPP(num_classes)
+    if true_if_unet_resnet:
+        model = UNET_RESNET(in_channels=3, out_channels=10)
+    else:
+        model = UNET(in_channels=3, out_channels=10)
+
     model.to(device)
-    # print(summary(model, (3, 256, 256)) )
+    print(summary(model, (3, 256, 256)) )
 
     for param in model.parameters():
         param.to(device)
 
-    train_dl, val_dl = get_data_loaders(DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
+    train_dl, val_dl = get_data_loaders(data_dir, DATA_PATH, BATCH_SIZE, SPLIT_RATIO)
     optimizer = torch.optim.AdamW(model.parameters(), LEARNING_RATE, weight_decay=1e-4)
     criterion = nn.CrossEntropyLoss()
     writer = SummaryWriter()
@@ -30,7 +32,10 @@ def train(saveIntermediateModels=False):
     train_epoch_losses = []
     val_epoch_losses = []
 
-    output_models_dir = "output_models"
+    if true_if_unet_resnet:
+        output_models_dir = "output_models_" + data_dir + "_unet_resnet"
+    else:
+        output_models_dir = "output_models_" + data_dir + "_unet"
     os.makedirs(output_models_dir, exist_ok=True)
 
     for epoch in range(NUM_EPOCHS):
@@ -78,19 +83,28 @@ def train(saveIntermediateModels=False):
         if saveIntermediateModels:
             # Save the trained model every 10 epochs after the 50th epoch
             if (epoch + 1) % 10 == 0:
-                if (epoch + 1) / 10 > 4:
-                    model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
-                    torch.save(model.state_dict(), model_save_path)
-                    print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
-
-    # Save the trained model
-    torch.save(model.state_dict(), "unet_model.pth")
+                model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
+                torch.save(model.state_dict(), model_save_path)
+                print(f"Model saved at epoch {epoch + 1} to {model_save_path}")
+        
+    if not saveIntermediateModels:
+        # Save the trained model at the end
+        torch.save(model.state_dict(), os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth"))
 
     # Save the loss data
-    file = "loss_data.txt"
     data = np.column_stack((np.arange(len(train_epoch_losses)), train_epoch_losses, val_epoch_losses))
-    np.savetxt(file, data, header="Index Train_Loss Val_Loss", comments="", fmt="%d %.4f %.4f")
-    return file
+    path = os.path.join(output_models_dir, "loss_data.txt")
+    np.savetxt(path, data, header="Index Train_Loss Val_Loss", comments="", fmt="%d %.4f %.4f")
+    return path
 
 if __name__ == "__main__":
-    train()
+    train(true_if_unet_resnet = False, data_dir = "arrays_0", saveIntermediateModels = True)
+    train(true_if_unet_resnet = False, data_dir = "arrays_1", saveIntermediateModels = True)
+    train(true_if_unet_resnet = False, data_dir = "arrays_2", saveIntermediateModels = True)
+    train(true_if_unet_resnet = False, data_dir = "arrays_3", saveIntermediateModels = True)
+    train(true_if_unet_resnet = False, data_dir = "arrays_4", saveIntermediateModels = True)
+    train(true_if_unet_resnet = True, data_dir = "arrays_0", saveIntermediateModels = True)
+    train(true_if_unet_resnet = True, data_dir = "arrays_1", saveIntermediateModels = True)
+    train(true_if_unet_resnet = True, data_dir = "arrays_2", saveIntermediateModels = True)
+    train(true_if_unet_resnet = True, data_dir = "arrays_3", saveIntermediateModels = True)
+    train(true_if_unet_resnet = True, data_dir = "arrays_4", saveIntermediateModels = True)
