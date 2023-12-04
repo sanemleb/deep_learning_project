@@ -131,6 +131,8 @@ def save_plot_loss_from_txt(file_path, name):
     
 if __name__ == "__main__":
     
+    os.makedirs("./models/experiment_results", exist_ok=True)
+    
     ############# ARRAYS 0 -- UNET #####################
     ep = "40"
     path_model = "./models/experiment_outputs/output_models_arrays_0_unet/unet_model_epoch_40.pth"
