@@ -76,7 +76,7 @@ def train(saveIntermediateModels=False):
         print(f"Epoch {epoch + 1}/{NUM_EPOCHS}, Loss: {average_loss:.4f}, Val Loss: {average_val_loss:.4f}")
 
         if saveIntermediateModels:
-            # Save the trained model every 5 epochs
+            # Save the trained model every 10 epochs after the 50th epoch
             if (epoch + 1) % 10 == 0:
                 if (epoch + 1) / 10 > 4:
                     model_save_path = os.path.join(output_models_dir, f"unet_model_epoch_{epoch + 1}.pth")
