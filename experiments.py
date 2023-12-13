@@ -31,7 +31,7 @@ def load(model_path, is_resnet = False):
     
     
 def test(mdl, model_type, model_name):
-    masks_path = './data/carseg_data/test_arrays'
+    masks_path = './data/carseg_data/test_arrays_mask_corrected'
     torch.set_printoptions(sci_mode=False)
 
     # Create a list to store the model outputs
@@ -58,7 +58,6 @@ def test(mdl, model_type, model_name):
         img = mask[:, :, :3]
         mask_split = mask[:, :, 3]
         mask_split = mask_split.astype(int)
-        mask_split = mask_split//10
         one_hot_encoded = np.eye(10, dtype=int)[mask_split.squeeze()]
         dice_mask = np.expand_dims(one_hot_encoded.transpose(2,0,1), axis=0)
                 
@@ -125,8 +124,6 @@ def save_plot_loss_from_txt(file_path, name):
 
     # Save the plot as PNG
     plt.savefig(name + '.png', bbox_inches='tight')
-
-    # Show the plot
     plt.show()
     
 if __name__ == "__main__":
