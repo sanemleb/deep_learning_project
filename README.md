@@ -8,11 +8,11 @@
 
 # REPLICATING THE PROJECT RESULTS IN JUPYTER NOTEBOOKS
 
-In order to replicate the results in a jupyter notebook there are 3 components.
-1 - download the run_results_colab_modules.py
-2 - download the run_colab.ipynb 
-3 - download the deep_learning_notebook_files containing data and models
+In order to replicate the results in a jupyter notebook there are 3 components.\
+2 - download the run_colab.ipynb\
+3 - download the deep_learning_notebook_files containing data and models\
 
+Then upload the jupyter notebook to colab and mount the folder containing all necessary modules to run the code. The mounting lines are already included in the jupyter notebook
 
 # HPC SETUP NOTES
 
