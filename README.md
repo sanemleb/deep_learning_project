@@ -6,7 +6,15 @@
 #### Elli Georgiou - s223408
 
 
-# INITIAL SETUP NOTES
+# REPLICATING THE PROJECT RESULTS IN JUPYTER NOTEBOOKS
+
+In order to replicate the results in a jupyter notebook there are 3 components.
+1 - download the run_results_colab_modules.py
+2 - download the run_colab.ipynb 
+3 - download the deep_learning_notebook_files containing data and models
+
+
+# HPC SETUP NOTES
 
 First run the following command on your command line using your student id\
 `ssh <student_id>@login.hpc.dtu.dk`
@@ -47,7 +55,7 @@ let me know if you cant do it and I will show you how
 Now we should have the venv, the data and the code setup to run training
 
 
-# WORKING AFTER INITIAL SETUP
+#### WORKING AFTER INITIAL SETUP
 First run the following command on your command line using your student id \
 `ssh <student_id>@login.hpc.dtu.dk `
 
@@ -63,6 +71,3 @@ Run the following to activate venv \
 
 Start working
 
-# RUNNING A TRAINING IN THE SERVER 
-
-When you want to run a .py file that will run a training do the following
