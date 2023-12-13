@@ -9,7 +9,7 @@
 # REPLICATING THE PROJECT RESULTS IN JUPYTER NOTEBOOKS
 
 In order to replicate the results in a jupyter notebook there are 3 components.\
-1 - download the run_colab.ipynb\
+1 - download the run_colab.ipynb from this repository\
 2 - download the deep_learning_notebook_files containing data and models from the drive link shared in the run_colab.ipynb notebook\
 3 - upload the folder deep_learning_notebook_files to your own drive which you can mount in colab\
 
