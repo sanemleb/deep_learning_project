@@ -4,5 +4,6 @@ data/
 runs/
 models/
 drone_dataset/
+deep_learning_notebook_files/
 scores.txt
 dice_scores.txt

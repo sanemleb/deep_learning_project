@@ -6,10 +6,16 @@
 #### Elli Georgiou - s223408
 
 
-# REPLICATING THE PROJECT RESULTS IN JUPYTER NOTEBOOKS
+# REPLICATING THE PROJECT RESULTS IN LOCAL JUPYTER NOTEBOOKS - AUTO DOWNLOAD FOR DATA
 
-In order to replicate the results in a jupyter notebook there are 4 steps.\
-1 - download the run_colab.ipynb from this repository\
+In order to replicate the results in a local jupyter notebook file there are 4 steps.\
+1 - download the run_local_notebook.ipynb from this repository locally\
+2 - follow the steps in the notebook
+
+# REPLICATING THE PROJECT RESULTS IN COLAB NOTEBOOKS - MANUAL DOWNLOAD FOR DATA 
+
+In order to replicate the results in a colab jupyter notebook file there are 4 steps.\
+1 - download the run_colab_notebook.ipynb from this repository\
 2 - download the deep_learning_notebook_files containing data and models from the drive link shared in the run_colab.ipynb notebook\
 3 - upload the folder deep_learning_notebook_files to your own drive which you can mount in colab\
 4 - Then upload the jupyter notebook to colab and mount the folder containing all necessary modules to run the code. The mounting lines are already included in the jupyter notebook
