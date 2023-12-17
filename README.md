@@ -16,7 +16,7 @@ In order to replicate the results in a local jupyter notebook file there are 4 s
 
 In order to replicate the results in a colab jupyter notebook file there are 4 steps.\
 1 - download the run_colab_notebook.ipynb from this repository\
-2 - download the deep_learning_notebook_files containing data and models from the drive link shared in the run_colab.ipynb notebook\
+2 - download the deep_learning_notebook_files containing data and models from the drive link shared in the run_colab_notebook.ipynb notebook\
 3 - upload the folder deep_learning_notebook_files to your own drive which you can mount in colab\
 4 - Then upload the jupyter notebook to colab and mount the folder containing all necessary modules to run the code. The mounting lines are already included in the jupyter notebook
 
